@@ -54,11 +54,12 @@ namespace LibraryAppWpf.View
                     }
                     else
                     {
-                        MessageBox.Show(
-                            $"Вы вошли, {user.Lastname} {user.Firstname}",
-                            "Успех",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information);
+                        Static.CurrentUser = user;
+
+                        var mainWindow = new MainWindow();
+                        this.Hide();
+                        mainWindow.ShowDialog();
+                        this.Show();
                     }
                 }
         }

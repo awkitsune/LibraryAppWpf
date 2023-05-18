@@ -11,6 +11,61 @@
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0"
+                    Margin="8"
+                    HorizontalAlignment="Left">
+                
+                <TextBlock Text="Поиск"/>
+                <TextBox Name="searchQueryBox" 
+                     Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Width="200"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Right"
+                        Grid.Column="1"
+                        VerticalAlignment="Center">
+                <TextBlock Text="Добро пожаловать, "/>
+                <TextBlock Text="{Binding Username}"/>
+            </StackPanel>
+        </Grid>
+
+        <DataGrid Grid.Row="1"
+                  Margin="8 0"
+                  VerticalAlignment="Stretch" 
+                  ItemsSource="{Binding BooksList, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" 
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="Название книги" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Автор" Binding="{Binding Author.Fullname}"/>
+                <DataGridTextColumn Header="Год выпуска" Binding="{Binding Date.Year}"/>
+                <DataGridTextColumn Header="Страна" Binding="{Binding Author.Country.Value}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button Content="Добавить" 
+                    MinWidth="100"
+                    Margin="8"/>
+            <Button Content="Редактировать" 
+                    MinWidth="100"
+                    Margin="8"/>
+            <Button Content="Удалить" 
+                    MinWidth="100"
+                    Margin="8"/>
+        </StackPanel>
     </Grid>
 </Window>
