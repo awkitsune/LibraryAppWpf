@@ -42,7 +42,7 @@ namespace LibraryAppWpf.View
             }
             else using (var db = new DbModel.libraryDatabaseContext())
                 {
-                    var user = await db.User.FirstOrDefaultAsync(u => u.Login.Equals(loginBox.Text) && u.Password.Equals(passBox.Password));
+                    var user = await db.User.Include(r => r.Role).FirstOrDefaultAsync(u => u.Login.Equals(loginBox.Text) && u.Password.Equals(passBox.Password));
                     if (user == null)
                     {
                         MessageBox.Show(

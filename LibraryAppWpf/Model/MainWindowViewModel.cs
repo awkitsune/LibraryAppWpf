@@ -1,4 +1,5 @@
 ﻿using LibraryAppWpf.DbModel;
+using LibraryAppWpf.View;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace LibraryAppWpf.Model
 {
@@ -14,11 +16,27 @@ namespace LibraryAppWpf.Model
     {
         string _searchQuery = "";
         ObservableCollection<Book> _booksList = new ObservableCollection<Book>();
+        Book? _selectedBook = null;
+
+        string _searchOrderQuery = "";
+        ObservableCollection<Order> _ordersList = new ObservableCollection<Order>();
+        Order? _selectedOrder = null;
+
+        string _searchStudentQuery = "";
+        ObservableCollection<Student> _studentsList = new ObservableCollection<Student>();
+        Student? _selectedStudent = null;
+
+        string _searchStaffQuery = "";
+        ObservableCollection<User> _staffList = new ObservableCollection<User>();
+        User? _selectedStaff = null;
+
         public string Username { get => $"{Static.CurrentUser.Lastname} {Static.CurrentUser.Firstname}"; }
-        public ObservableCollection<Book> BooksList 
-        { 
-            get => _booksList; 
-            set { 
+
+        public ObservableCollection<Book> BooksList
+        {
+            get => _booksList;
+            set
+            {
                 _booksList = value;
                 OnPropertyChanged(nameof(BooksList));
             }
@@ -33,10 +51,122 @@ namespace LibraryAppWpf.Model
                 OnPropertyChanged(nameof(SearchQuery));
             }
         }
+        public Order? ChosenOrder
+        {
+            get => _selectedOrder;
+            set
+            {
+                _selectedOrder = value;
+                OnPropertyChanged(nameof(ChosenOrder));
+            }
+        }
+
+        public ObservableCollection<Order> OrdersList
+        {
+            get => _ordersList;
+            set
+            {
+                _ordersList = value;
+                OnPropertyChanged(nameof(OrdersList));
+            }
+        }
+        public string SearchOrderQuery
+        {
+            get => _searchOrderQuery;
+            set
+            {
+                _searchOrderQuery = value;
+                UpdateOrdersList();
+                OnPropertyChanged(nameof(SearchOrderQuery));
+            }
+        }
+        public Book? ChosenBook
+        {
+            get => _selectedBook;
+            set
+            {
+                _selectedBook = value;
+                IsEditable = _selectedBook is not null;
+                OnPropertyChanged(nameof(IsEditable));
+                OnPropertyChanged(nameof(ChosenBook));
+            }
+        }
+
+        public ObservableCollection<Student> StudentsList
+        {
+            get => _studentsList;
+            set
+            {
+                _studentsList = value;
+                OnPropertyChanged(nameof(StudentsList));
+            }
+        }
+        public string SearchStudentQuery
+        {
+            get => _searchStudentQuery;
+            set
+            {
+                _searchStudentQuery = value;
+                UpdateStudentsList();
+                OnPropertyChanged(nameof(SearchStudentQuery));
+            }
+        }
+        public Student? ChosenStudent
+        {
+            get => _selectedStudent;
+            set
+            {
+                _selectedStudent = value;
+                OnPropertyChanged(nameof(ChosenStudent));
+            }
+        }
+
+        public ObservableCollection<User> StaffList
+        {
+            get => _staffList;
+            set
+            {
+                _staffList = value;
+                OnPropertyChanged(nameof(StaffList));
+            }
+        }
+        public string SearchStaffQuery
+        {
+            get => _searchStaffQuery;
+            set
+            {
+                _searchStudentQuery = value;
+                UpdateStaffList();
+                OnPropertyChanged(nameof(SearchStaffQuery));
+            }
+        }
+        public User? ChosenStaff
+        {
+            get => _selectedStaff;
+            set
+            {
+                _selectedStaff = value;
+                OnPropertyChanged(nameof(ChosenStaff));
+            }
+        }
+
+        public Visibility IsUserAdmin { get => Static.CurrentUser.Role.Value == "ADMIN" ? Visibility.Visible : Visibility.Collapsed; }
+        bool _isEditable = false;
+        public bool IsEditable {
+            get => _isEditable; 
+            set
+            {
+                _isEditable = value;
+                OnPropertyChanged(nameof(IsEditable));
+            }
+        }
 
         public MainWindowViewModel()
         {
             UpdateBooksList();
+            UpdateOrdersList();
+            UpdateStudentsList();
+            UpdateStaffList();
         }
 
         public void UpdateBooksList()
@@ -55,8 +185,137 @@ namespace LibraryAppWpf.Model
                         b.Keywords.Contains(SearchQuery)))
                 {
                     BooksList.Add(item);
-                }         
+                }
             }
         }
+
+        public void UpdateOrdersList()
+        {
+            using (var db = new libraryDatabaseContext())
+            {
+                OrdersList.Clear();
+                foreach (var item in db.Order
+                    .Include(r => r.Status)
+                    .Include(r => r.Staff)
+                    .ThenInclude(r => r.Role)
+                    .Include(r => r.Student)
+                    .Include(r => r.Book)
+                    .Where(
+                        b =>
+                        b.Student.Firstname.Contains(SearchOrderQuery) ||
+                        b.Student.Lastname.Contains(SearchOrderQuery) ||
+                        b.Staff.Firstname.Contains(SearchOrderQuery) ||
+                        b.Staff.Lastname.Contains(SearchOrderQuery) ||
+                        b.Book.Any(r => r.Keywords.Contains(SearchOrderQuery))))
+                {
+                    OrdersList.Add(item);
+                }
+            }
+        }
+
+        public void UpdateStudentsList()
+        {
+            using (var db = new libraryDatabaseContext())
+            {
+                StudentsList.Clear();
+                foreach (var item in db.Student
+                    .Where(
+                        s =>
+                        s.Firstname.Contains(SearchStudentQuery) ||
+                        s.Lastname.Contains(SearchStudentQuery) ||
+                        s.Middlename.Contains(SearchStudentQuery)))
+                {
+                    StudentsList.Add(item);
+                }
+            }
+        }
+
+        public void UpdateStaffList()
+        {
+            using (var db = new libraryDatabaseContext())
+            {
+                StaffList.Clear();
+                foreach (var item in db.User
+                    .Include(r => r.Role)
+                    .Where(
+                        s =>
+                        s.Firstname.Contains(SearchStaffQuery) ||
+                        s.Lastname.Contains(SearchStaffQuery) ||
+                        s.Login.Contains(SearchStaffQuery)))
+                {
+                    StaffList.Add(item);
+                }
+            }
+        }
+
+
+        RelayCommand _removeBookCommand;
+        public RelayCommand RemoveBookCommand
+        {
+            get
+            {
+                return _removeBookCommand ??
+                    (_removeBookCommand = new RelayCommand(obj =>
+                    {
+                        var answer = MessageBox.Show(
+                            $"Вы действительно хотите удалить книгу {ChosenBook.Name}?",
+                            "Подтверждение",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question);
+                        if (answer == MessageBoxResult.Yes)
+                        {
+                            using (var db = new libraryDatabaseContext())
+                            {
+                                db.Book.Remove(ChosenBook);
+                                db.SaveChanges();
+                            }
+                            UpdateBooksList();
+                        }
+                    }));
+            }
+        }
+
+        RelayCommand _editBookCommand;
+        public RelayCommand EditBookCommand
+        {
+            get
+            {
+                return _editBookCommand ??
+                    (_editBookCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenBook is null) {
+                            MessageBox.Show(
+                                "Сначала выберите книгу",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var edit = new BookEditWindow(ChosenBook);
+                            edit.ShowDialog();
+                        }
+
+                        UpdateBooksList();
+                    }));
+            }
+        }
+        RelayCommand _addBookCommand;
+        public RelayCommand AddBookCommand
+        {
+            get
+            {
+                return _addBookCommand ??
+                    (_addBookCommand = new RelayCommand(obj =>
+                    {
+                        var edit = new BookEditWindow();
+                        edit.ShowDialog();
+
+                        UpdateBooksList();
+                    }));
+            }
+        }
+
+
     }
 }
