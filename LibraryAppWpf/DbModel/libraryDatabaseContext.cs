@@ -113,7 +113,7 @@ namespace LibraryAppWpf.DbModel
                         r => r.HasOne<Order>().WithMany().HasForeignKey("OrderId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OrderHasBook_Order"),
                         j =>
                         {
-                            j.HasKey("OrderId", "BookId");
+                            //j.HasKey("OrderId", "BookId");
 
                             j.ToTable("OrderHasBook");
                         });

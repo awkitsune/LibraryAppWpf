@@ -5,59 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LibraryAppWpf.View"
         mc:Ignorable="d"
-        Title="Создание/редактирование книги" Height="450" Width="400
+        Title="Создание/редактирование персонала" Height="450" Width="400
         " ResizeMode="NoResize">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="193*"/>
+            <ColumnDefinition Width="207*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Книга"
-                  Grid.Row="0">
+        <GroupBox Header="Пользователь"
+                  Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,223" Grid.RowSpan="3">
             <StackPanel>
-                <TextBlock Text="Название" Margin="0 4 0 0"/>
-                <TextBox Name="bookNameBox"
-                         Text="{Binding Name}"/>
+                <TextBlock Text="Имя" Margin="0 4 0 0"/>
+                <TextBox Name="firstnameBox"
+                         Text="{Binding Firstname}"/>
 
-                <TextBlock Text="Ключевые слова" Margin="0 4 0 0"/>
-                <TextBox Name="bookKeywordsBox"
-                         Text="{Binding Keywords}"/>
+                <TextBlock Text="Фамилия" Margin="0 4 0 0"/>
+                <TextBox Name="lastnameBox"
+                         Text="{Binding Lastname}"/>
 
-                <TextBlock Text="Дата выхода" Margin="0 4 0 0"/>
-                <DatePicker Name="bookDatePicker"
-                            SelectedDate="{Binding Date}"/>
+                <TextBlock Text="Имя пользователя" Margin="0 4 0 0"/>
+                <TextBox Name="loginBox"
+                         Text="{Binding Login}"/>
 
-                <TextBlock Text="Количество" Margin="0 4 0 0"/>
-                <TextBox Name="bookAmountBox"
-                         Text="{Binding Quantity}"/>
+                <TextBlock Text="Пароль" Margin="0 4 0 0"/>
+                <TextBox Name="passwordBox"
+                         Text="{Binding Password}"/>
             </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Автор"
-                  Grid.Row="1">
-            <StackPanel>
-                <TextBlock Text="Полное имя" Margin="0 4 0 0"/>
-                <TextBox Name="authorFullnameBox"
-                         Text="{Binding Author.Fullname}"/>
-
-                <TextBlock Text="Дата рождения" Margin="0 4 0 0"/>
-                <DatePicker Name="authorBirthDatePicker"
-                            SelectedDate="{Binding Author.BirthDate}"/>
-
-                <TextBlock Text="Дата смерти (если есть)" Margin="0 4 0 0"/>
-                <DatePicker Name="authorDeathDatePicker"
-                            SelectedDate="{Binding Author.DeathDate}"/>
-
-                <TextBlock Text="Страна" Margin="0 4 0 0"/>
-                <TextBox Name="authorCountryBox"
-                         Text="{Binding Author.Country.Value}"/>
-            </StackPanel>
-            
         </GroupBox>
 
         <StackPanel Grid.Row="3"
-                    Margin="8">
+                    Margin="8,8,8,8" Grid.ColumnSpan="2">
             <Button Name="submitButton" Content="Записать" Click="submitButton_Click"/>
         </StackPanel>
     </Grid>

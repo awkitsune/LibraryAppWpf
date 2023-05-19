@@ -200,12 +200,15 @@ namespace LibraryAppWpf.Model
                     .ThenInclude(r => r.Role)
                     .Include(r => r.Student)
                     .Include(r => r.Book)
+                    .ThenInclude(r => r.Author)
+                    .ThenInclude(r => r.Country)
                     .Where(
                         b =>
                         b.Student.Firstname.Contains(SearchOrderQuery) ||
                         b.Student.Lastname.Contains(SearchOrderQuery) ||
                         b.Staff.Firstname.Contains(SearchOrderQuery) ||
                         b.Staff.Lastname.Contains(SearchOrderQuery) ||
+                        b.TakingDate.ToString().Contains(SearchOrderQuery) ||
                         b.Book.Any(r => r.Keywords.Contains(SearchOrderQuery))))
                 {
                     OrdersList.Add(item);
@@ -317,5 +320,272 @@ namespace LibraryAppWpf.Model
         }
 
 
+        RelayCommand _removeStaffCommand;
+        public RelayCommand RemoveStaffCommand
+        {
+            get
+            {
+                return _removeStaffCommand ??
+                    (_removeStaffCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenStaff is null)
+                        {
+                            MessageBox.Show(
+                                "Сначала выберите пользователя",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var answer = MessageBox.Show(
+                                $"Вы действительно хотите удалить пользователя {ChosenStaff.Login}?",
+                                "Подтверждение",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question);
+
+                            if (answer == MessageBoxResult.Yes)
+                            {
+                                using (var db = new libraryDatabaseContext())
+                                {
+                                    if (ChosenStaff.Role.Value == "ADMIN")
+                                    {
+                                        MessageBox.Show(
+                                            $"Нельзя удалить администратора {ChosenStaff.Login}",
+                                            "Ошибка",
+                                            MessageBoxButton.OK,
+                                            MessageBoxImage.Error);
+                                    }
+                                    else
+                                    {
+                                        db.User.Remove(ChosenStaff);
+                                        db.SaveChanges();
+                                    }
+
+                                }
+                                UpdateStaffList();
+                            }
+                        }
+                    }));
+            }
+        }
+
+        RelayCommand _editStaffCommand;
+        public RelayCommand EditStaffCommand
+        {
+            get
+            {
+                return _editStaffCommand ??
+                    (_editStaffCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenStaff is null)
+                        {
+                            MessageBox.Show(
+                                "Сначала выберите пользователя",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var edit = new StaffEditWindow(ChosenStaff);
+                            edit.ShowDialog();
+                        }
+
+                        UpdateStaffList();
+                    }));
+            }
+        }
+        RelayCommand _addStaffCommand;
+        public RelayCommand AddStaffCommand
+        {
+            get
+            {
+                return _addStaffCommand ??
+                    (_addStaffCommand = new RelayCommand(obj =>
+                    {
+                        var edit = new StaffEditWindow();
+                        edit.ShowDialog();
+
+                        UpdateStaffList();
+                    }));
+            }
+        }
+
+
+        RelayCommand _removeStudentCommand;
+        public RelayCommand RemoveStudentCommand
+        {
+            get
+            {
+                return _removeStudentCommand ??
+                    (_removeStudentCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenStudent is null)
+                        {
+                            MessageBox.Show(
+                                "Сначала выберите ученика",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var answer = MessageBox.Show(
+                                $"Вы действительно хотите удалить пользователя {ChosenStudent.Firstname} {ChosenStudent.Lastname}?",
+                                "Подтверждение",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question);
+
+                            if (answer == MessageBoxResult.Yes)
+                            {
+                                using (var db = new libraryDatabaseContext())
+                                {
+                                    db.Student.Remove(ChosenStudent);
+                                    db.SaveChanges();
+
+                                }
+                                UpdateStudentsList();
+                            }
+                        }
+                    }));
+            }
+        }
+
+        RelayCommand _editStudentCommand;
+        public RelayCommand EditStudentCommand
+        {
+            get
+            {
+                return _editStudentCommand ??
+                    (_editStudentCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenStudent is null)
+                        {
+                            MessageBox.Show(
+                                "Сначала выберите ученика",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var edit = new StudentEditWindow(ChosenStudent);
+                            edit.ShowDialog();
+                        }
+
+                        UpdateStudentsList();
+                    }));
+            }
+        }
+        RelayCommand _addStudentCommand;
+        public RelayCommand AddStudentCommand
+        {
+            get
+            {
+                return _addStudentCommand ??
+                    (_addStudentCommand = new RelayCommand(obj =>
+                    {
+                        var edit = new StudentEditWindow();
+                        edit.ShowDialog();
+
+                        UpdateStudentsList();
+                    }));
+            }
+        }
+
+
+        RelayCommand _removeOrderCommand;
+        public RelayCommand RemoveOrderCommand
+        {
+            get
+            {
+                return _removeOrderCommand ??
+                    (_removeOrderCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenOrder is null)
+                        {
+                            MessageBox.Show(
+                                "Сначала выберите запись",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var answer = MessageBox.Show(
+                                $"Вы действительно хотите удалить запись {ChosenOrder.Id}?",
+                                "Подтверждение",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question);
+
+                            if (answer == MessageBoxResult.Yes)
+                            {
+                                using (var db = new libraryDatabaseContext())
+                                {
+                                    db.Order.Remove(ChosenOrder);
+                                    db.SaveChanges();
+
+                                }
+                                UpdateStudentsList();
+                            }
+                        }
+                    }));
+            }
+        }
+
+        RelayCommand _editOrderCommand;
+        public RelayCommand EditOrderCommand
+        {
+            get
+            {
+                return _editOrderCommand ??
+                    (_editOrderCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenOrder is null)
+                        {
+                            MessageBox.Show(
+                                "Сначала выберите запись",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var edit = new RecordEditWindow(ChosenOrder);
+                            edit.ShowDialog();
+                        }
+
+                        UpdateOrdersList();
+                    }));
+            }
+        }
+        RelayCommand _addOrderCommand;
+        public RelayCommand AddOrderCommand
+        {
+            get
+            {
+                return _addOrderCommand ??
+                    (_addOrderCommand = new RelayCommand(obj =>
+                    {
+                        if (ChosenBook is null)
+                        {
+                            MessageBox.Show(
+                                "Сначала выберите книгу",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        else
+                        {
+                            var edit = new RecordEditWindow(ChosenBook);
+                            edit.ShowDialog();
+
+                            UpdateOrdersList();
+                        }
+
+                    }));
+            }
+        }
     }
 }

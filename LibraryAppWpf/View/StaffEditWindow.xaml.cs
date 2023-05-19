@@ -21,47 +21,51 @@ namespace LibraryAppWpf.View
     /// </summary>
     public partial class StaffEditWindow : Window
     {
-        Book _editableBook;
-        public StaffEditWindow(Book? _book = null)
+        User _editableUser;
+        public StaffEditWindow(User? _user = null)
         {
             InitializeComponent();
 
-            if (_book != null)
+            if (_user != null)
             {
-                _editableBook = _book;
+                _editableUser = _user;
             }
             else
             {
-                _editableBook = new Book();
+                _editableUser = new User();
 
-                _editableBook.Author = new BookAuthor();
-                _editableBook.Author.Country = new Country();
+                _editableUser.Role = new Role();
             }
 
-            this.DataContext = _editableBook;
+            this.DataContext = _editableUser;
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
             using (var db = new libraryDatabaseContext())
             {
-                if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableBook.Author.Country.Value)) is null)
+                try
                 {
-                    db.Country.Add(_editableBook.Author.Country);
+                    if (_editableUser.Role.Value == null)
+                    {
+                        _editableUser.Role = db.Role.AsNoTracking().FirstOrDefault(a => a.Value.Equals("STAFF"));
+                    }
+
+                    db.User.Update(_editableUser);
                     db.SaveChanges();
+
+                    this.Close();
+                }
+                catch (Exception err)
+                {
+                    MessageBox.Show(
+                        $"Произошла ошибка. \nПроверьте правильность заполнения данных!\n\n" +
+                        $"{err.Message}",
+                        "Ошибка",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
 
-
-                if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableBook.Author.Fullname)) is null)
-                {
-                    db.BookAuthor.Add(_editableBook.Author);
-                    db.SaveChanges();
-                }
-
-                db.Book.Update(_editableBook);
-                db.SaveChanges();
-
-                this.Close();
             }
             
         }

@@ -45,25 +45,36 @@ namespace LibraryAppWpf.View
         {
             using (var db = new libraryDatabaseContext())
             {
-                if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableBook.Author.Country.Value)) is null)
+                try
                 {
-                    db.Country.Add(_editableBook.Author.Country);
+                    if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableBook.Author.Country.Value)) is null)
+                    {
+                        db.Country.Add(_editableBook.Author.Country);
+                        db.SaveChanges();
+                    }
+
+
+                    if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableBook.Author.Fullname)) is null)
+                    {
+                        db.BookAuthor.Add(_editableBook.Author);
+                        db.SaveChanges();
+                    }
+
+                    db.Book.Update(_editableBook);
                     db.SaveChanges();
+
+                    this.Close();
                 }
-
-
-                if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableBook.Author.Fullname)) is null)
+                catch (Exception err)
                 {
-                    db.BookAuthor.Add(_editableBook.Author);
-                    db.SaveChanges();
+                    MessageBox.Show(
+                        $"Произошла ошибка. \nПроверьте правильность заполнения данных!\n\n" +
+                        $"{err.Message}",
+                        "Ошибка",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
-
-                db.Book.Update(_editableBook);
-                db.SaveChanges();
-
-                this.Close();
             }
-            
         }
     }
 }

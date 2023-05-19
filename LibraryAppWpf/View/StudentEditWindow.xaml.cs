@@ -21,49 +21,44 @@ namespace LibraryAppWpf.View
     /// </summary>
     public partial class StudentEditWindow : Window
     {
-        Book _editableBook;
-        public StudentEditWindow(Book? _book = null)
+        Student _editableStudent;
+        public StudentEditWindow(Student? _student = null)
         {
             InitializeComponent();
 
-            if (_book != null)
+            if (_student != null)
             {
-                _editableBook = _book;
+                _editableStudent = _student;
             }
             else
             {
-                _editableBook = new Book();
-
-                _editableBook.Author = new BookAuthor();
-                _editableBook.Author.Country = new Country();
+                _editableStudent = new Student();
             }
 
-            this.DataContext = _editableBook;
+            this.DataContext = _editableStudent;
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
             using (var db = new libraryDatabaseContext())
             {
-                if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableBook.Author.Country.Value)) is null)
+                try
                 {
-                    db.Country.Add(_editableBook.Author.Country);
+                    db.Student.Update(_editableStudent);
                     db.SaveChanges();
+
+                    this.Close();
                 }
-
-
-                if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableBook.Author.Fullname)) is null)
+                catch (Exception err)
                 {
-                    db.BookAuthor.Add(_editableBook.Author);
-                    db.SaveChanges();
+                    MessageBox.Show(
+                        $"Произошла ошибка. \nПроверьте правильность заполнения данных!\n\n" +
+                        $"{err.Message}",
+                        "Ошибка",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
-
-                db.Book.Update(_editableBook);
-                db.SaveChanges();
-
-                this.Close();
             }
-            
         }
     }
 }

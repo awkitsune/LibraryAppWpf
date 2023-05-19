@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,47 +22,91 @@ namespace LibraryAppWpf.View
     /// </summary>
     public partial class RecordEditWindow : Window
     {
-        Book _editableBook;
-        public RecordEditWindow(Book? _book = null)
+        Order _editableOrder;
+        Order _origOrder;
+        Book? _addedBook = null;
+        ObservableCollection<Student> studentsList = new ObservableCollection<Student>();
+        ObservableCollection<OrderStatus> statusList = new ObservableCollection<OrderStatus>();
+
+
+        public RecordEditWindow(Order _order)
         {
             InitializeComponent();
 
-            if (_book != null)
+            using (var db = new libraryDatabaseContext())
             {
-                _editableBook = _book;
+                foreach (var item in db.Student)
+                {
+                    studentsList.Add(item);
+                }
+                studentsCombo.ItemsSource = studentsList;
+
+                foreach (var item in db.OrderStatus)
+                {
+                    statusList.Add(item);
+                }
+                statusCombo.ItemsSource = statusList;
             }
-            else
+
+            _origOrder = _order;
+            _editableOrder = _order;
+
+            _addedBook = _order.Book.First();
+
+            this.DataContext = _editableOrder;
+        }
+        public RecordEditWindow(Book _book)
+        {
+            InitializeComponent();
+
+            using (var db = new libraryDatabaseContext())
             {
-                _editableBook = new Book();
+                foreach (var item in db.Student)
+                {
+                    studentsList.Add(item);
+                }
+                studentsCombo.ItemsSource = studentsList;
 
-                _editableBook.Author = new BookAuthor();
-                _editableBook.Author.Country = new Country();
+                foreach (var item in db.OrderStatus)
+                {
+                    statusList.Add(item);
+                }
+                statusCombo.ItemsSource = statusList;
             }
 
-            this.DataContext = _editableBook;
+            _addedBook = _book;
+
+            _editableOrder = new Order();
+            _origOrder = new Order();
+
+            _editableOrder.Student = new Student();
+            _editableOrder.Status = new OrderStatus();
+            _editableOrder.Book = new List<Book>() { _addedBook };
+            _editableOrder.Staff = Static.CurrentUser;
+
+            this.DataContext = _editableOrder;
         }
 
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
             using (var db = new libraryDatabaseContext())
             {
-                if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableBook.Author.Country.Value)) is null)
+                try
                 {
-                    db.Country.Add(_editableBook.Author.Country);
+                    db.Order.Update(_editableOrder);
                     db.SaveChanges();
+
+                    this.Close();
                 }
-
-
-                if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableBook.Author.Fullname)) is null)
+                catch (Exception err)
                 {
-                    db.BookAuthor.Add(_editableBook.Author);
-                    db.SaveChanges();
+                    MessageBox.Show(
+                        $"Произошла ошибка. \nПроверьте правильность заполнения данных!\n\n" +
+                        $"{err}", 
+                        "Ошибка", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Error);
                 }
-
-                db.Book.Update(_editableBook);
-                db.SaveChanges();
-
-                this.Close();
             }
             
         }

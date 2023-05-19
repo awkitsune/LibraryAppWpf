@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LibraryAppWpf.View"
         mc:Ignorable="d"
-        Title="Создание/редактирование книги" Height="450" Width="400
-        " ResizeMode="NoResize">
+        Title="Создание/редактирование записи" Height="500" Width="400" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -15,45 +14,84 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <GroupBox Header="Книга"
-                  Grid.Row="0">
+                  Grid.Row="0"
+                  IsEnabled="False">
             <StackPanel>
                 <TextBlock Text="Название" Margin="0 4 0 0"/>
                 <TextBox Name="bookNameBox"
-                         Text="{Binding Name}"/>
+                         Text="{Binding Book[0].Name}"/>
 
                 <TextBlock Text="Ключевые слова" Margin="0 4 0 0"/>
                 <TextBox Name="bookKeywordsBox"
-                         Text="{Binding Keywords}"/>
+                         Text="{Binding Book[0].Keywords}"/>
 
                 <TextBlock Text="Дата выхода" Margin="0 4 0 0"/>
                 <DatePicker Name="bookDatePicker"
-                            SelectedDate="{Binding Date}"/>
+                            SelectedDate="{Binding Book[0].Date}"/>
 
-                <TextBlock Text="Количество" Margin="0 4 0 0"/>
-                <TextBox Name="bookAmountBox"
-                         Text="{Binding Quantity}"/>
+                <GroupBox Header="Автор"
+                          Grid.Row="1">
+                    <StackPanel>
+                        <TextBlock Text="Полное имя" Margin="0 4 0 0"/>
+                        <TextBox Text="{Binding Book[0].Author.Fullname}"/>
+
+                        <TextBlock Text="Страна" Margin="0 4 0 0"/>
+                        <TextBox Text="{Binding Book[0].Author.Country.Value}"/>
+                    </StackPanel>
+
+                </GroupBox>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Автор"
+        
+        <GroupBox Header="Заказ"
                   Grid.Row="1">
             <StackPanel>
-                <TextBlock Text="Полное имя" Margin="0 4 0 0"/>
-                <TextBox Name="authorFullnameBox"
-                         Text="{Binding Author.Fullname}"/>
+                <TextBlock Text="Ученик" Margin="0 4 0 0"/>
+                <ComboBox IsEditable="False"
+                          Name="studentsCombo"
+                          SelectedItem="{Binding Student}">
+                    <ComboBox.Text>
+                        <MultiBinding StringFormat="{}{0} {1}">
+                            <Binding Path="Lastname"/>
+                            <Binding Path="Firstname"/>
+                        </MultiBinding>
+                    </ComboBox.Text>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="Lastname"/>
+                                        <Binding Path="Firstname"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-                <TextBlock Text="Дата рождения" Margin="0 4 0 0"/>
-                <DatePicker Name="authorBirthDatePicker"
-                            SelectedDate="{Binding Author.BirthDate}"/>
+                <TextBlock Text="Количество дней" Margin="0 4 0 0"/>
+                <TextBox Text="{Binding Length}"/>
 
-                <TextBlock Text="Дата смерти (если есть)" Margin="0 4 0 0"/>
-                <DatePicker Name="authorDeathDatePicker"
-                            SelectedDate="{Binding Author.DeathDate}"/>
+                <TextBlock Text="Статус" Margin="0 4 0 0"/>
+                <ComboBox IsEditable="False"
+                          Name="statusCombo"
+                          SelectedItem="{Binding Status}"
+                          Text="{Binding Status, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}">
+                                        <Binding Path="Value"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-                <TextBlock Text="Страна" Margin="0 4 0 0"/>
-                <TextBox Name="authorCountryBox"
-                         Text="{Binding Author.Country.Value}"/>
             </StackPanel>
-            
         </GroupBox>
 
         <StackPanel Grid.Row="3"

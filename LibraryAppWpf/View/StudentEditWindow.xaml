@@ -14,46 +14,49 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Книга"
+        <GroupBox Header="Ученик"
                   Grid.Row="0">
             <StackPanel>
-                <TextBlock Text="Название" Margin="0 4 0 0"/>
-                <TextBox Name="bookNameBox"
-                         Text="{Binding Name}"/>
+                <TextBlock Text="Фамилия" Margin="0 4 0 0"/>
+                <TextBox Name="lastnameBox"
+                         Text="{Binding Lastname}"/>
 
-                <TextBlock Text="Ключевые слова" Margin="0 4 0 0"/>
-                <TextBox Name="bookKeywordsBox"
-                         Text="{Binding Keywords}"/>
+                <TextBlock Text="Имя" Margin="0 4 0 0"/>
+                <TextBox Name="firstnameBox"
+                         Text="{Binding Firstname}"/>
 
-                <TextBlock Text="Дата выхода" Margin="0 4 0 0"/>
-                <DatePicker Name="bookDatePicker"
-                            SelectedDate="{Binding Date}"/>
-
-                <TextBlock Text="Количество" Margin="0 4 0 0"/>
-                <TextBox Name="bookAmountBox"
-                         Text="{Binding Quantity}"/>
-            </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Автор"
-                  Grid.Row="1">
-            <StackPanel>
-                <TextBlock Text="Полное имя" Margin="0 4 0 0"/>
-                <TextBox Name="authorFullnameBox"
-                         Text="{Binding Author.Fullname}"/>
+                <TextBlock Text="Отчество (необязательно)" Margin="0 4 0 0"/>
+                <TextBox Name="middlenameBox"
+                         Text="{Binding Middlename}"/>
 
                 <TextBlock Text="Дата рождения" Margin="0 4 0 0"/>
                 <DatePicker Name="authorBirthDatePicker"
-                            SelectedDate="{Binding Author.BirthDate}"/>
+                            SelectedDate="{Binding BirthDate}"/>
 
-                <TextBlock Text="Дата смерти (если есть)" Margin="0 4 0 0"/>
-                <DatePicker Name="authorDeathDatePicker"
-                            SelectedDate="{Binding Author.DeathDate}"/>
+                <TextBlock Text="Дата поступления" Margin="0 4 0 0"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <DatePicker Name="authorDeathDatePicker"
+                                SelectedDate="{Binding EntryYear}"
+                                Grid.Column="0"/>
+                    <CheckBox Name="stillThereCheck"
+                              Content="Ещё обучается?"
+                              IsChecked="{Binding StillThere}"
+                              Margin="4 0 0 0"
+                              Grid.Column="1"
+                              VerticalAlignment="Center"/>
+                </Grid>
 
-                <TextBlock Text="Страна" Margin="0 4 0 0"/>
-                <TextBox Name="authorCountryBox"
-                         Text="{Binding Author.Country.Value}"/>
+
+
+
+                <TextBlock Text="Количество долгов" Margin="0 4 0 0"/>
+                <TextBox Name="debtsBox"
+                         Text="{Binding AmountOfDebts}"/>
             </StackPanel>
-            
         </GroupBox>
 
         <StackPanel Grid.Row="3"

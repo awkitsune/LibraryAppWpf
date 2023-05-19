@@ -50,7 +50,8 @@
                                      Width="200"/>
                             <Button Content="Записать выбранную книгу" 
                                     MinWidth="200"
-                                    Margin="8 0"/>
+                                    Margin="8 0"
+                                    Command="{Binding AddOrderCommand}"/>
                         </StackPanel>
 
                     </StackPanel>
@@ -62,7 +63,8 @@
                               ItemsSource="{Binding BooksList, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" 
                               AutoGenerateColumns="False"
                               SelectedItem="{Binding ChosenBook}"
-                              IsReadOnly="True">
+                              IsReadOnly="True"
+                              SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                             <DataGridTextColumn Header="Название книги" Binding="{Binding Name}"/>
@@ -122,13 +124,56 @@
                               VerticalAlignment="Stretch" 
                               ItemsSource="{Binding OrdersList, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" 
                               AutoGenerateColumns="False"
-                              SelectedItem="{Binding ChosenOrder}">
+                              SelectedItem="{Binding ChosenOrder}"
+                              IsReadOnly="True"
+                              SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
-                            <DataGridTextColumn Header="Название книги" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="Автор" Binding="{Binding Author.Fullname}"/>
-                            <DataGridTextColumn Header="Год выпуска" Binding="{Binding Date.Year}"/>
-                            <DataGridTextColumn Header="Страна" Binding="{Binding Author.Country.Value}"/>
+                            <DataGridTemplateColumn Header="Название книги">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ContentControl Content="{Binding Book}">
+                                            <ContentControl.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}"/>
+                                                </DataTemplate>
+                                            </ContentControl.ContentTemplate>
+                                        </ContentControl>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Ученик">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <Binding Path="Student.Lastname"/>
+                                                    <Binding Path="Student.Firstname"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Получено" Binding="{Binding TakingDate}"/>
+                            <DataGridTemplateColumn Header="Срок">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <TextBlock.Background>
+                                                <SolidColorBrush Color="{Binding}"/>
+                                            </TextBlock.Background>
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} дн.">
+                                                    <Binding Path="Length"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -141,10 +186,12 @@
                             Visibility="{Binding IsUserAdmin}"> 
                             <Button Content="Редактировать" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding EditOrderCommand}"/>
                             <Button Content="Удалить" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding RemoveOrderCommand}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -174,7 +221,9 @@
                               VerticalAlignment="Stretch" 
                               ItemsSource="{Binding StudentsList, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" 
                               AutoGenerateColumns="False"
-                              SelectedItem="{Binding ChosenStudent}">
+                              SelectedItem="{Binding ChosenStudent}"
+                              IsReadOnly="True"
+                              SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                             <DataGridTextColumn Header="Фамилия" Binding="{Binding Lastname}"/>
@@ -195,13 +244,16 @@
                             HorizontalAlignment="Right">
                             <Button Content="Добавить" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding AddStudentCommand}"/>
                             <Button Content="Редактировать" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding EditStudentCommand}"/>
                             <Button Content="Удалить" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding RemoveStudentCommand}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -221,7 +273,9 @@
                               VerticalAlignment="Stretch" 
                               ItemsSource="{Binding StaffList, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" 
                               AutoGenerateColumns="False"
-                              SelectedItem="{Binding ChosenStaff}">
+                              SelectedItem="{Binding ChosenStaff}"
+                              IsReadOnly="True"
+                              SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
                             <DataGridTextColumn Header="Фамилия" Binding="{Binding Lastname}"/>
@@ -239,13 +293,16 @@
                             HorizontalAlignment="Right">
                             <Button Content="Добавить" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding AddStaffCommand}"/>
                             <Button Content="Редактировать" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding EditStaffCommand}"/>
                             <Button Content="Удалить" 
                                     MinWidth="100"
-                                    Margin="8"/>
+                                    Margin="8"
+                                    Command="{Binding RemoveStaffCommand}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
