@@ -20,14 +20,14 @@ namespace LibraryAppWpf.View
     /// <summary>
     /// Interaction logic for BookEditWindow.xaml
     /// </summary>
-    public partial class RecordEditWindow : Window
+    public partial class RecordAddWindow : Window
     {
         Order _editableOrder;
+        Book? _addedBook = null;
         ObservableCollection<Student> studentsList = new ObservableCollection<Student>();
         ObservableCollection<OrderStatus> statusList = new ObservableCollection<OrderStatus>();
 
-
-        public RecordEditWindow(Order _order)
+        public RecordAddWindow(Book _book)
         {
             InitializeComponent();
 
@@ -46,8 +46,14 @@ namespace LibraryAppWpf.View
                 statusCombo.ItemsSource = statusList;
             }
 
-            _editableOrder = _order;
-            _editableOrder.Book = _editableOrder.Book.ToList();
+            _addedBook = _book;
+
+            _editableOrder = new Order();
+
+            _editableOrder.Student = new Student();
+            _editableOrder.Status = new OrderStatus();
+            _editableOrder.Book = new Collection<Book>() { _addedBook };
+            _editableOrder.Staff = Static.CurrentUser;
 
             this.DataContext = _editableOrder;
         }
@@ -58,20 +64,7 @@ namespace LibraryAppWpf.View
             {
                 try
                 {
-                    if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableOrder.Book.First().Author.Country.Value)) is null)
-                    {
-                        db.Country.Add(_editableOrder.Book.First().Author.Country);
-                        db.SaveChanges();
-                    }
-
-
-                    if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableOrder.Book.First().Author.Fullname)) is null)
-                    {
-                        db.BookAuthor.Add(_editableOrder.Book.First().Author);
-                        db.SaveChanges();
-                    }
-
-                    db.Order.Update(_editableOrder);
+                    db.Order.Add(_editableOrder);
 
                     db.SaveChanges();
 

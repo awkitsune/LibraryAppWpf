@@ -578,7 +578,7 @@ namespace LibraryAppWpf.Model
                         }
                         else
                         {
-                            var edit = new RecordEditWindow(ChosenBook);
+                            var edit = new RecordAddWindow(ChosenBook);
                             edit.ShowDialog();
 
                             UpdateOrdersList();
