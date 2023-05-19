@@ -7,22 +7,17 @@ namespace LibraryAppWpf.DbModel
 {
     public partial class Order
     {
-        public Order()
-        {
-            Book = new HashSet<Book>();
-        }
-
         public int Id { get; set; }
         public int StudentId { get; set; }
         public int StatusId { get; set; }
         public int StaffId { get; set; }
         public DateTime TakingDate { get; set; }
         public int Length { get; set; }
+        public int BookId { get; set; }
 
+        public virtual Book Book { get; set; }
         public virtual User Staff { get; set; }
         public virtual OrderStatus Status { get; set; }
         public virtual Student Student { get; set; }
-
-        public virtual ICollection<Book> Book { get; set; }
     }
 }

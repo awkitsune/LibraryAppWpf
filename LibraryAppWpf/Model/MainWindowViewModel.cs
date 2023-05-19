@@ -209,7 +209,7 @@ namespace LibraryAppWpf.Model
                         b.Staff.Firstname.Contains(SearchOrderQuery) ||
                         b.Staff.Lastname.Contains(SearchOrderQuery) ||
                         b.TakingDate.ToString().Contains(SearchOrderQuery) ||
-                        b.Book.Any(r => r.Keywords.Contains(SearchOrderQuery))))
+                        b.Book.Keywords.Contains(SearchOrderQuery)))
                 {
                     OrdersList.Add(item);
                 }

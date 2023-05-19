@@ -31,10 +31,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[OrderHasBook]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[OrderStatus]",
          "ObjectType": 0
       },

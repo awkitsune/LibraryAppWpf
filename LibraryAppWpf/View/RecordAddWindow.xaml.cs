@@ -52,7 +52,7 @@ namespace LibraryAppWpf.View
 
             _editableOrder.Student = new Student();
             _editableOrder.Status = new OrderStatus();
-            _editableOrder.Book = new Collection<Book>() { _addedBook };
+            _editableOrder.Book = _addedBook;
             _editableOrder.Staff = Static.CurrentUser;
 
             this.DataContext = _editableOrder;
@@ -64,7 +64,7 @@ namespace LibraryAppWpf.View
             {
                 try
                 {
-                    db.Order.Add(_editableOrder);
+                    db.Order.Update(_editableOrder);
 
                     db.SaveChanges();
 

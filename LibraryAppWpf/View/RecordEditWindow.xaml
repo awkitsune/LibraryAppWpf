@@ -19,24 +19,24 @@
             <StackPanel>
                 <TextBlock Text="Название" Margin="0 4 0 0"/>
                 <TextBox Name="bookNameBox"
-                         Text="{Binding Book[0].Name}"/>
+                         Text="{Binding Book.Name}"/>
 
                 <TextBlock Text="Ключевые слова" Margin="0 4 0 0"/>
                 <TextBox Name="bookKeywordsBox"
-                         Text="{Binding Book[0].Keywords}"/>
+                         Text="{Binding Book.Keywords}"/>
 
                 <TextBlock Text="Дата выхода" Margin="0 4 0 0"/>
                 <DatePicker Name="bookDatePicker"
-                            SelectedDate="{Binding Book[0].Date}"/>
+                            SelectedDate="{Binding Book.Date}"/>
 
                 <GroupBox Header="Автор"
                           Grid.Row="1">
                     <StackPanel>
                         <TextBlock Text="Полное имя" Margin="0 4 0 0"/>
-                        <TextBox Name="authorFullnameBox" Text="{Binding Book[0].Author.Fullname}"/>
+                        <TextBox Name="authorFullnameBox" Text="{Binding Book.Author.Fullname}"/>
 
                         <TextBlock Text="Страна" Margin="0 4 0 0"/>
-                        <TextBox Name="authorCountryBox" Text="{Binding Book[0].Author.Country.Value}"/>
+                        <TextBox Name="authorCountryBox" Text="{Binding Book.Author.Country.Value}"/>
                     </StackPanel>
 
                 </GroupBox>

@@ -47,7 +47,6 @@ namespace LibraryAppWpf.View
             }
 
             _editableOrder = _order;
-            _editableOrder.Book = _editableOrder.Book.ToList();
 
             this.DataContext = _editableOrder;
         }
@@ -58,16 +57,16 @@ namespace LibraryAppWpf.View
             {
                 try
                 {
-                    if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableOrder.Book.First().Author.Country.Value)) is null)
+                    if (db.Country.AsNoTracking().FirstOrDefault(a => a.Value.Equals(_editableOrder.Book.Author.Country.Value)) is null)
                     {
-                        db.Country.Add(_editableOrder.Book.First().Author.Country);
+                        db.Country.Add(_editableOrder.Book.Author.Country);
                         db.SaveChanges();
                     }
 
 
-                    if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableOrder.Book.First().Author.Fullname)) is null)
+                    if (db.BookAuthor.AsNoTracking().FirstOrDefault(a => a.Fullname.Equals(_editableOrder.Book.Author.Fullname)) is null)
                     {
-                        db.BookAuthor.Add(_editableOrder.Book.First().Author);
+                        db.BookAuthor.Add(_editableOrder.Book.Author);
                         db.SaveChanges();
                     }
 

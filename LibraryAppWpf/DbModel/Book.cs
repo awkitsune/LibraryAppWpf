@@ -20,7 +20,6 @@ namespace LibraryAppWpf.DbModel
         public int Quantity { get; set; }
 
         public virtual BookAuthor Author { get; set; }
-
         public virtual ICollection<Order> Order { get; set; }
     }
 }

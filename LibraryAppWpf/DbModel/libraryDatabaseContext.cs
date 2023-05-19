@@ -83,9 +83,13 @@ namespace LibraryAppWpf.DbModel
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.TakingDate).HasColumnType("date");
+
+                entity.HasOne(d => d.Book)
+                    .WithMany(p => p.Order)
+                    .HasForeignKey(d => d.BookId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Order_Book");
 
                 entity.HasOne(d => d.Staff)
                     .WithMany(p => p.Order)
@@ -104,19 +108,6 @@ namespace LibraryAppWpf.DbModel
                     .HasForeignKey(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Order_Student");
-
-                entity.HasMany(d => d.Book)
-                    .WithMany(p => p.Order)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "OrderHasBook",
-                        l => l.HasOne<Book>().WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OrderHasBook_Book"),
-                        r => r.HasOne<Order>().WithMany().HasForeignKey("OrderId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_OrderHasBook_Order"),
-                        j =>
-                        {
-                            //j.HasKey("OrderId", "BookId");
-
-                            j.ToTable("OrderHasBook");
-                        });
             });
 
             modelBuilder.Entity<OrderStatus>(entity =>
