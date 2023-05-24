@@ -183,8 +183,7 @@
                         HorizontalAlignment="Right">
                         <StackPanel Grid.Row="2"
                             Orientation="Horizontal" 
-                            HorizontalAlignment="Right"
-                            Visibility="{Binding IsUserAdmin}"> 
+                            HorizontalAlignment="Right"> 
                             <Button Content="Редактировать" 
                                     MinWidth="100"
                                     Margin="8"
