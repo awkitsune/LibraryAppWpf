@@ -19,7 +19,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <GroupBox Header="Пользователь"
-                  Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,223" Grid.RowSpan="3">
+                  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="3">
             <StackPanel>
                 <TextBlock Text="Имя" Margin="0 4 0 0"/>
                 <TextBox Name="firstnameBox"
